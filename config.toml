@@ -1063,4 +1063,4 @@ uglyURLs = false
     #       options empty("")
 
     
-#    publishDir = docs
+publishDir = "docs"
