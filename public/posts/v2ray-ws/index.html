@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en-US" data-theme="light">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#"><meta name="theme-color" content="#fff" />
+        <script>
+            const theme = localStorage.getItem('theme');
+            if (theme === "dark") {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1c1c21');
+            } else if (theme === "light") {
+                document.documentElement.setAttribute('data-theme', 'light');
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff');
+            }
+        </script>
+
+    <meta charset="UTF-8" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    
+    <meta name="renderer" content="webkit" />
+
+    <meta name="generator" content="Hugo 0.59.1" />
+
+    <title>Caddy/Nginx &#43; V2Ray | MrSheep&#39;s Blog</title>
+
+    <link rel="stylesheet" href="/css/meme.min.da3f52a80b4c481b826b5ca0d1331714e04c2c4bf14ddc9a13366bc5ed5312cf.css" integrity="sha256-2j9SqAtMSBuCa1yg0TMXFOBMLEvxTdyaEzZrxe1TEs8=" data-instant-track /><style data-instant-track>.post-body h1,.post-body h2,.post-body h3,.post-body h4,.post-body h5,.post-body h6,.contents-title,.contents-title-indent {font-variant:small-caps}</style>
+
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Serif:400,400i,500,700,700i|Source+Code+Pro:400,400i,700,700i|Comfortaa:700&display=swap" rel="stylesheet" />
+
+    <meta name="author" content="reuixiy" />
+    <meta name="description" content="相比較於之前的Nginx，Caddy是一個更加輕量級，安裝更加方便，配置超級簡單的web server，並且支持自動申請lets encrypt證書（雖然我用不到） Caddy配置十分的簡單，幾分鐘即可以完成配置
+" />
+    <meta name="keywords" content="" />
+    
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#2a6df4" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="MrSheep&#39;s Blog" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="MrSheep&#39;s Blog" />
+    <meta name="msapplication-starturl" content="../../" />
+    <meta name="msapplication-TileColor" content="#fff" />
+    <meta name="msapplication-TileImage" content="../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    
+    
+
+    
+    <link rel="canonical" href="https://example.com/posts/v2ray-ws/" />
+
+
+
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2019-09-15T13:37:25+08:00",
+        "dateModified": "2019-11-16T17:35:20+08:00",
+        "url": "https://example.com/posts/v2ray-ws/",
+        "headline": "Caddy/Nginx + V2Ray",
+        "description": "相比較於之前的Nginx，Caddy是一個更加輕量級，安裝更加方便，配置超級簡單的web server，並且支持自動申請lets encrypt證書（雖然我用不到） Caddy配置十分的簡單，幾分鐘即可以完成配置\n",
+        "keywords": "",
+        "inLanguage" : "en-US",
+        "articleSection": "posts",
+        "wordCount":  1214 ,
+        "image": "https://example.com/icons/apple-touch-icon.png",
+        "author": {
+            "@type": "Person",
+            "description": "Viva La Vida",
+            "email": "reuixiy@gmail.com",
+            "image": "https://example.com/icons/apple-touch-icon.png",
+            "url": "https://io-oi.me/",
+            "name": "reuixiy"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "MrSheep's Blog",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://example.com/icons/apple-touch-icon.png"
+            },
+            "url": "https://example.com/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://example.com/"
+        }
+    }
+</script>
+
+    
+
+
+
+<meta name="twitter:card" content="summary" />
+
+<meta name="twitter:site" content="@PeterLu40259620" />
+<meta name="twitter:creator" content="@reuixiy" />
+
+    
+
+
+
+
+
+
+<meta property="og:title" content="Caddy/Nginx &#43; V2Ray" />
+<meta property="og:description" content="相比較於之前的Nginx，Caddy是一個更加輕量級，安裝更加方便，配置超級簡單的web server，並且支持自動申請lets encrypt證書（雖然我用不到） Caddy配置十分的簡單，幾分鐘即可以完成配置
+" />
+<meta property="og:url" content="https://example.com/posts/v2ray-ws/" />
+<meta property="og:site_name" content="MrSheep&#39;s Blog" />
+<meta property="og:locale" content="en-US" /><meta property="og:image" content="https://example.com/icons/apple-touch-icon.png" />
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2019-09-15T13:37:25+08:00" />
+    <meta property="article:modified_time" content="2019-11-16T17:35:20+08:00" />
+    
+    <meta property="article:section" content="posts" />
+    <meta property="article:tag" content="" />
+
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header">
+        <div class="site-brand">
+            
+            <a href="/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 66.146 26.458" class="brand"><path d="M58.216 17.03v-2.505c1.084 0 3.793.067 5.351.225l.068-.067c-.045-.204-.068-.655-.068-.858 0-.204.023-.633.068-.836l-.068-.067c-1.332.112-2.687.225-5.35.225V11.5c0-.384.022-2.438.18-2.98 3.025 0 6.457.27 6.457.27l.045-.09c-.022-.18-.045-.722-.045-.925 0-.18 0-.474.045-.79l-.045-.068c-.361.045-.88.068-1.355.068h-6.863c-.768 0-1.897-.068-1.897-.068l-.045.068c.18 1.287.271 2.822.271 4.515v5.532c0 1.693-.09 3.296-.27 4.515l.022.068s1.129-.068 1.919-.068h7.09c.473 0 .993.023 1.354.068l.045-.068c-.045-.293-.045-.587-.045-.813 0-.225.022-1.06.045-1.241l-.045-.09s-3.658.496-6.683.496c-.158-.542-.18-2.483-.18-2.867zm-20.694-3.363l-.113-.068c0-.497-.022-1.445-.045-1.648-.045-.136-.068-.226-.203-.226-.655.113-2.123.113-2.913.068l-.045.067c.158.971.248 2.71.248 4.38v1.242c0 1.694-.09 2.845-.27 4.064l.022.068s.948-.068 1.739-.068c.767 0 1.67.068 1.67.068l.045-.068c-.18-1.287-.225-2.348-.225-4.064v-2.28c.948-1.152 1.76-1.829 2.393-1.829.858 0 1.332.316 1.332 1.829v2.28c0 1.694-.09 2.845-.27 4.064l.022.068s1.016-.068 1.806-.068c.767 0 1.648.068 1.648.068l.045-.068c-.18-1.287-.27-2.348-.27-4.064v-1.987c0-.316 0-.406-.023-.677 1.083-1.197 1.58-1.445 2.46-1.445.723 0 1.242.497 1.242 2.01v2.1c0 1.693-.09 2.844-.27 4.063l.022.068s1.016-.068 1.806-.068c.768 0 1.648.068 1.648.068l.046-.068c-.181-1.287-.271-2.348-.271-4.064v-2.258c0-2.257-.79-3.59-3.229-3.59-1.129 0-2.303.452-3.59 1.807-.451-1.129-1.084-1.806-3.093-1.806-1.106 0-2.506.925-3.364 2.032zm-12.436 2.122c.068-1.106.339-1.874.677-2.348a1.645 1.645 0 0 1 1.377-.677c.904 0 1.468 1.06 1.468 3.025zm6.209 3.341c-1.061.858-2.145.926-3.093.926-1.107 0-1.92-.293-2.461-.88-.497-.542-.745-1.332-.745-2.371h2.235c2.258 0 4.2.045 4.2.045l.135-.135c0-2.823-.79-5.08-4.268-5.08-1.241 0-2.596.406-3.5 1.129-1.083.903-1.828 2.28-1.828 4.131 0 1.332.474 2.755 1.423 3.703.767.813 2.1 1.174 3.793 1.174 1.625 0 3.228-.52 4.47-1.942 0-.293-.135-.7-.361-.7zM4 6.803c-.835 4.832-2.032 10.499-2.98 14.811.248-.068.767-.068 1.038-.068.249 0 1.016 0 1.265.068.067-2.37.632-7.157 1.241-10.68l.068.023a153.476 153.476 0 0 1 4.29 10.59h1.445c1.648-3.749 3.454-7.135 5.373-10.612h.068c.43 3.567.723 6.931 1.039 10.679.338-.068 1.422-.068 1.76-.068.34 0 1.31 0 1.649.068-.7-4.9-1.197-9.257-1.784-14.811h-2.009L10.82 17.302h-.09c-1.784-3.568-3.094-6.864-4.426-10.499z"/></svg></a>
+            
+        </div>
+    </header>
+
+            
+    <nav class="nav">
+        <ul class="menu" id="menu">
+            
+                
+            
+            
+            
+                <li class="menu-item"><a href="/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="icon menu-item-icon"><path d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"/></svg><span class="menu-item-name">Home</span></a>
+                </li>
+            
+                <li class="menu-item"><a href="/posts/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon menu-item-icon"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg><span class="menu-item-name">POSTS</span></a>
+                </li>
+            
+                <li class="menu-item"><a href="/about/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="icon menu-item-icon"><path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z"/></svg><span class="menu-item-name">About</span></a>
+                </li>
+            
+        </ul>
+    </nav>
+
+            
+            
+    
+        
+            
+        
+        
+        <div id="theme-toggle" onclick="modeSwitcher()">🌞</div>
+    
+
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+        <article class="content post">
+            
+            <h1 class="post-title">Caddy/Nginx &#43; V2Ray</h1>
+
+            
+
+            
+                
+            
+
+            
+                <div class="post-meta">
+    
+        
+        <time datetime="2019-09-15T13:37:25+08:00" class="post-meta-item published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"/></svg>2019.9.15</time>
+    
+    
+        
+        <time datetime="2019-11-16T17:35:20+08:00" class="post-meta-item modified"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M400 64h-48V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H160V12c0-6.627-5.373-12-12-12h-40c-6.627 0-12 5.373-12 12v52H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm-6 400H54a6 6 0 0 1-6-6V160h352v298a6 6 0 0 1-6 6zm-52.849-200.65L198.842 404.519c-4.705 4.667-12.303 4.637-16.971-.068l-75.091-75.699c-4.667-4.705-4.637-12.303.068-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l44.104 44.461 111.072-110.181c4.705-4.667 12.303-4.637 16.971.068l22.536 22.718c4.667 4.705 4.636 12.303-.069 16.97z"/></svg>2019.11.16</time>
+    
+    
+    
+        
+        
+        
+            
+        
+    
+    
+        
+        <span class="post-meta-item wordcount"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"/></svg>1214</span>
+    
+    
+        
+        <span class="post-meta-item readingtime"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>6&nbsp;mins</span>
+    
+</div>
+            
+
+            <div class="post-body"><p style="text-indent:0"><span class="drop-cap">相</span>比較於之前的Nginx，Caddy是一個更加輕量級，安裝更加方便，配置超級簡單的web server，並且支持自動申請lets encrypt證書（雖然我用不到）
+Caddy配置十分的簡單，幾分鐘即可以完成配置</p>
+
+<h1 id="caddy"><a href="#caddy" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Caddy</h1>
+
+<h3 id="下載安裝"><a href="#下載安裝" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>下載安裝</h3>
+
+<p><a href="https://caddyserver.com/download" target="_blank">Caddy官網</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">curl https://getcaddy.com <span class="p">|</span> bash -s personal http.forwardproxy,http.proxyprotocol</code></pre></td></tr></table>
+</div>
+</div>
+<p>CentOS的話請輸入一下命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">curl -s https://raw.githubusercontent.com/GEM7/My_scripts/master/caddy/caddy.service -o /etc/systemd/system/caddy.service</code></pre></td></tr></table>
+</div>
+</div>
+<h3 id="配置"><a href="#配置" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>配置</h3>
+
+<p>配置真心超級簡單，如果需要使用自己的證書，比如CF的證書，請將證書和私鑰保存本地，在配置文件中引用即可。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="err">你的域名:</span><span class="mi">443</span> <span class="p">{</span>
+    <span class="err">root</span> <span class="err">/www</span>
+    <span class="err">gzip</span>
+    <span class="err">index</span> <span class="err">index.html</span>
+    <span class="err">tls</span> <span class="err">證書路徑</span> <span class="err">私鑰路徑</span>
+    <span class="err">//如果需要自動申請的話，請移除上面這行</span>
+    <span class="err">proxy</span> <span class="err">僞裝路徑</span> <span class="err">localhost:9999</span> <span class="err">{</span>
+           <span class="err">websocket</span>
+           <span class="err">header_upstream</span> <span class="err">-Origin</span>
+    <span class="p">}</span>
+<span class="err">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="nginx"><a href="#nginx" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Nginx</h1>
+
+<p>我之前使用是Nginx，但是由於體積大，配置複雜所以選用Caddy，但是這裏還是附上Nginx配置，僅供參考</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">server
+<span class="o">{</span>
+    listen <span class="m">80</span><span class="p">;</span>
+    listen <span class="m">443</span> ssl http2<span class="p">;</span>
+    server_name 你的域名 *.你的域名<span class="p">;</span>
+    index index.php index.html index.htm default.php default.htm default.html<span class="p">;</span>
+    root /www/wwwroot/你的域名<span class="p">;</span>
+    
+    <span class="c1">#SSL-START SSL相关配置，请勿删除或修改下一行带注释的404规则</span>
+    <span class="c1">#error_page 404/404.html;</span>
+    <span class="c1">#HTTP_TO_HTTPS_START</span>
+    <span class="k">if</span> <span class="o">(</span><span class="nv">$server_port</span> !~ <span class="m">443</span><span class="o">){</span>
+        rewrite ^<span class="o">(</span>/.*<span class="o">)</span>$ https://<span class="nv">$host$1</span> permanent<span class="p">;</span>
+    <span class="o">}</span>
+    <span class="c1">#HTTP_TO_HTTPS_END</span>
+    ssl_certificate    /etc/letsencrypt/live/你的域名/fullchain.pem<span class="p">;</span>
+    ssl_certificate_key    /etc/letsencrypt/live/你的域名/privkey.pem<span class="p">;</span>
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2<span class="p">;</span>
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE<span class="p">;</span>
+    ssl_prefer_server_ciphers on<span class="p">;</span>
+    ssl_session_cache shared:SSL:10m<span class="p">;</span>
+    ssl_session_timeout 10m<span class="p">;</span>
+    error_page <span class="m">497</span>  https://<span class="nv">$host$request_uri</span><span class="p">;</span>
+
+    <span class="c1">#SSL-END</span>
+    
+    <span class="c1">#ERROR-PAGE-START  错误页配置，可以注释、删除或修改</span>
+    error_page <span class="m">404</span> /404.html<span class="p">;</span>
+    error_page <span class="m">502</span> /502.html<span class="p">;</span>
+    <span class="c1">#ERROR-PAGE-END</span>
+    
+    <span class="c1">#PHP-INFO-START  PHP引用配置，可以注释或修改</span>
+    include enable-php-72.conf<span class="p">;</span>
+    <span class="c1">#PHP-INFO-END</span>
+    
+    <span class="c1">#REWRITE-START URL重写规则引用,修改后将导致面板设置的伪静态规则失效</span>
+    include /www/server/panel/vhost/rewrite/你的域名.conf<span class="p">;</span>
+    <span class="c1">#REWRITE-END</span>
+    
+    <span class="c1">#禁止访问的文件或目录</span>
+    location ~ ^/<span class="o">(</span><span class="se">\.</span>user.ini<span class="p">|</span><span class="se">\.</span>htaccess<span class="p">|</span><span class="se">\.</span>git<span class="p">|</span><span class="se">\.</span>svn<span class="p">|</span><span class="se">\.</span>project<span class="p">|</span>LICENSE<span class="p">|</span>README.md<span class="o">)</span>
+    <span class="o">{</span>
+        <span class="k">return</span> <span class="m">404</span><span class="p">;</span>
+    <span class="o">}</span>
+    
+    <span class="c1">#一键申请SSL证书验证目录相关设置</span>
+    location ~ <span class="se">\.</span>well-known<span class="o">{</span>
+        allow all<span class="p">;</span>
+    <span class="o">}</span>
+    
+    location ~ .*<span class="se">\.</span><span class="o">(</span>gif<span class="p">|</span>jpg<span class="p">|</span>jpeg<span class="p">|</span>png<span class="p">|</span>bmp<span class="p">|</span>swf<span class="o">)</span>$
+    <span class="o">{</span>
+        expires      30d<span class="p">;</span>
+        error_log off<span class="p">;</span>
+        access_log off<span class="p">;</span>
+    <span class="o">}</span>
+    
+    location ~ .*<span class="se">\.</span><span class="o">(</span>js<span class="p">|</span>css<span class="o">)</span>?$
+    <span class="o">{</span>
+        expires      12h<span class="p">;</span>
+        error_log off<span class="p">;</span>
+        access_log off<span class="p">;</span> 
+    <span class="o">}</span>
+    access_log  /www/wwwlogs/你的域名.log<span class="p">;</span>
+    error_log  /www/wwwlogs/你的域名.error.log<span class="p">;</span>
+             location /ws/ <span class="o">{</span>   
+             proxy_redirect off<span class="p">;</span>
+             proxy_pass http://127.0.0.1:你的端口<span class="p">;</span> 
+             proxy_http_version <span class="m">1</span>.1<span class="p">;</span>
+             proxy_set_header Upgrade <span class="nv">$http_upgrade</span><span class="p">;</span>
+             proxy_set_header Connection <span class="s2">&#34;upgrade&#34;</span><span class="p">;</span>
+             proxy_set_header Host <span class="nv">$http_host</span><span class="p">;</span>            
+          <span class="o">}</span>
+<span class="o">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>證書申請之類的請自行參考使用<strong>acme.sh</strong></p>
+
+<h3 id="websocket解決bad-request"><a href="#websocket解決bad-request" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>WebSocket解決Bad Request</h3>
+
+<p>轉自<a href="https://www.ivyseeds.cf/websockets2/" target="_blank">从零开始安装爱国工具指南（十四）V2Ray补充、WebSockets模式补完</a></p>
+
+<h4 id="修改nginx-conf"><a href="#修改nginx-conf" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>修改nginx.conf</h4>
+
+<p>文件位<code>于/usr/local/nginx/conf/</code></p>
+
+<p>在代码<code>http{}</code>段里添加一句</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">proxy_intercept_errors on;</pre></td></tr></table>
+</div>
+</div>
+<p>保存退出即可</p>
+
+<h4 id="修改vhost文件"><a href="#修改vhost文件" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>修改vhost文件</h4>
+
+<p>文件位于<code>/usr/local/nginx/conf/vhost/</code></p>
+
+<p>在443端口的配置里加一句，比如說我跳轉回到<a href="https://mrsheep.win" target="_blank">mrsheep.win</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">error_page 400 = https://www.mrsheep.win;</pre></td></tr></table>
+</div>
+</div>
+<p>保存退出重启nginx</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">service nginx restart</pre></td></tr></table>
+</div>
+</div>
+<h1 id="v2ray"><a href="#v2ray" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>V2Ray</h1>
+
+<h2 id="安裝"><a href="#安裝" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>安裝</h2>
+
+<h3 id="官方安裝"><a href="#官方安裝" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>官方安裝</h3>
+
+<p><strong>如果你想要使用管理腳本等，請直接跳過本節</strong>
+使用官方安裝腳本: <a href="https://www.v2ray.com/chapter_00/install.html#linuxscript" target="_blank">www.v2ray.com/chapter_00/install.html#linuxscript</a>
+<strong>請使用root用戶運行一下腳本</strong>
+运行下面的指令下载并安装  V2Ray。当 yum 或 apt-get 可用的情况下，此脚本会自动安装 unzip 和 daemon。这两个组件是安装 V2Ray  的必要组件。如果你使用的系统不支持 yum 或 apt-get，请自行安装 unzip 和 daemon</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">bash &lt;<span class="o">(</span>curl -L -s https://install.direct/go.sh<span class="o">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><strong>此脚本会自动安装以下文件：</strong></p>
+
+<p><code>/usr/bin/v2ray/v2ray</code>：V2Ray 程序；
+<code>/usr/bin/v2ray/v2ctl</code>：V2Ray 工具；
+<code>/etc/v2ray/config.json</code>：配置文件；
+<code>/usr/bin/v2ray/geoip.dat</code>：IP 数据文件
+<code>/usr/bin/v2ray/geosite.dat</code>：域名数据文件
+配置<code>/etc/v2ray/config.json</code>即可</p>
+
+<h3 id="腳本"><a href="#腳本" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>腳本</h3>
+
+<p>這裏僅僅使用Multi-V2Ray，其他的請自行參考對應wiki</p>
+
+<h4 id="multi-v2ray"><a href="#multi-v2ray" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Multi-V2Ray</h4>
+
+<p>項目地址：<a href="https://github.com/Jrohy/multi-v2ray" target="_blank">https://github.com/Jrohy/multi-v2ray</a>
+運行命令安裝，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">source</span> &lt;<span class="o">(</span>curl -sL https://git.io/fNgqx<span class="o">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>部分VPS安裝完成之後提示找不到v2ray命令，請運行<code>/usr/local/multi-v2ray/v2ray</code></p>
+
+<h5 id="命令行參數"><a href="#命令行參數" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>命令行參數：</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">   v2ray -h                   查看帮助
+   v2ray -v                   查看版本信息
+   v2ray start                启动 V2Ray
+   v2ray stop                 停止 V2Ray
+   v2ray restart              重启 V2Ray
+   v2ray status               查看 V2Ray 运行状态
+   v2ray log                  查看 V2Ray 运行日志
+   v2ray update               更新 V2Ray 到最新Release版本
+   v2ray update <span class="o">[</span>version<span class="o">]</span>     更新 V2Ray 到特定版本
+   v2ray update.sh            更新 multi-v2ray 脚本
+   v2ray update.sh <span class="o">[</span>version<span class="o">]</span>  更新 multi-v2ray 到特定版本
+   v2ray add                  新增mkcp + 随机一种 <span class="o">(</span>srtp <span class="p">|</span> wechat-video <span class="p">|</span> utp<span class="o">)</span> header伪装的端口<span class="o">(</span>Group<span class="o">)</span>
+   v2ray add <span class="o">[</span>wechat<span class="p">|</span>utp<span class="p">|</span>srtp<span class="p">|</span>dtls<span class="p">|</span>wireguard<span class="p">|</span>socks<span class="p">|</span>mtproto<span class="p">|</span>ss<span class="o">]</span>     新增一种协议的组，端口随机,如 v2ray add utp 为新增utp协议
+   v2ray del                  删除端口组
+   v2ray info                 查看配置
+   v2ray port                 修改端口
+   v2ray tls                  修改tls
+   v2ray tfo                  修改tcpFastOpen
+   v2ray stream               修改传输协议
+   v2ray stats                iptables流量统计
+   v2ray clean                清理日志</code></pre></td></tr></table>
+</div>
+</div>
+<p>更多請參考: <a href="https://github.com/Jrohy/multi-v2ray/wiki" target="_blank">https://github.com/Jrohy/multi-v2ray/wiki</a></p>
+
+<h2 id="配置-1"><a href="#配置-1" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>配置</h2>
+
+<h3 id="tls"><a href="#tls" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>TLS</h3>
+
+<p>證書的話可以直接使用Caddy自動申請Let‘s Encrypt的證書，3個月續命一次即可</p>
+
+<p>其他的話如使用Cloudflare簽發的證書，請參考上面 [Caddy配置][配置]</p>
+
+<h3 id="dns"><a href="#dns" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>DNS</h3>
+
+<p><strong>推荐的DNS服务商（免费）：Geoscaling，Cloudflare（仅使用DNS）</strong>
+不建议使用国内解析服务，VPS提供的DNS服务（例如Conoha的DNS解析）</p>
+
+<h3 id="bbr"><a href="#bbr" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>BBR</h3>
+
+<h4 id="換核"><a href="#換核" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>換核</h4>
+
+<p>如果你不需要，請直接跳過</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">//导入key
+rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+//安装 elrepo 的yum源
+rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-2.el7.elrepo.noarch.rpm
+//安装内核
+yum --enablerepo<span class="o">=</span>elrepo-kernel install kernel-ml-devel kernel-ml -y
+//查看系统启动项：
+cat /boot/grub2/grub.cfg <span class="p">|</span>grep menuentry
+//设置最新版本内核为默认启动：
+grub2-set-default <span class="err">&#39;</span>最新的內核，如CentOS Linux <span class="o">(</span><span class="m">4</span>.8.5-1.el7.elrepo.x86_64<span class="o">)</span> <span class="m">7</span> <span class="o">(</span>Core<span class="o">)</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><strong>注：請一定等待安裝完成</strong></p>
+
+<p>此时，查看默认启动的系统版本</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">grub2-editenv list</code></pre></td></tr></table>
+</div>
+</div>
+<p>显示为&rsquo;CentOS Linux (4.8.5-1.el7.elrepo.x86_64) 7 (Core)&lsquo;或類似，reboot之后再次查看 <code>uname -r</code></p>
+
+<h4 id="開啓bbr"><a href="#開啓bbr" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>開啓BBR</h4>
+
+<p>複製如下命令即可</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-bash" data-lang="bash">cat &gt;&gt;/etc/sysctl.conf <span class="s">&lt;&lt; EOF
+</span><span class="s">net.core.default_qdisc=fq
+</span><span class="s">net.ipv4.tcp_congestion_control=bbr
+</span><span class="s">EOF</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>再继续内核参数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">sysctl -p</pre></td></tr></table>
+</div>
+</div>
+<p>返回類似結果</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr</pre></td></tr></table>
+</div>
+</div>
+<p>最后保险起见，复核一下BBR是否生效：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">sysctl net.ipv4.tcp_available_congestion_control
+
+lsmod | grep bbr</pre></td></tr></table>
+</div>
+</div>
+<p>返回類似</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">net.ipv4.tcp_available_congestion_control = reno cubic bbr
+
+tcp_bbr                20480  41 </pre></td></tr></table>
+</div>
+</div>
+<h4 id="cdn"><a href="#cdn" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>CDN</h4>
+
+<p>個人不需要套CDN，當前地區封鎖不嚴重</p>
+
+<h4 id="配置模板"><a href="#配置模板" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>配置模板</h4>
+
+<p>我的部分配置可以參考</p>
+
+<h5 id="服務端"><a href="#服務端" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>服務端</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;inbound&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;streamSettings&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;network&#34;</span><span class="p">:</span> <span class="s2">&#34;ws&#34;</span><span class="p">,</span> 
+      <span class="nt">&#34;wsSettings&#34;</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="nt">&#34;headers&#34;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&#34;host&#34;</span><span class="p">:</span> <span class="s2">&#34;你的域名&#34;</span>
+        <span class="p">},</span>
+      <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/ws/&#34;</span>
+      <span class="p">}</span>
+    <span class="p">},</span> 
+    <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;vmess&#34;</span><span class="p">,</span> 
+    <span class="nt">&#34;port&#34;</span><span class="p">:</span> <span class="err">你的端口</span><span class="p">,</span> 
+    <span class="nt">&#34;settings&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;clients&#34;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&#34;alterId&#34;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span> 
+          <span class="nt">&#34;security&#34;</span><span class="p">:</span> <span class="s2">&#34;auto&#34;</span><span class="p">,</span> 
+          <span class="nt">&#34;id&#34;</span><span class="p">:</span> <span class="s2">&#34;你的uuid&#34;</span><span class="p">,</span> 
+          <span class="nt">&#34;level&#34;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span> 
+  <span class="nt">&#34;outboundDetour&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;tag&#34;</span><span class="p">:</span> <span class="s2">&#34;blocked&#34;</span><span class="p">,</span> 
+      <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;blackhole&#34;</span><span class="p">,</span> 
+      <span class="nt">&#34;settings&#34;</span><span class="p">:</span> <span class="p">{}</span>
+    <span class="p">}</span>
+  <span class="p">],</span> 
+  <span class="nt">&#34;outbound&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;freedom&#34;</span><span class="p">,</span> 
+    <span class="nt">&#34;settings&#34;</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">},</span> 
+  <span class="nt">&#34;log&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;access&#34;</span><span class="p">:</span> <span class="s2">&#34;/var/log/v2ray/access.log&#34;</span><span class="p">,</span> 
+    <span class="nt">&#34;loglevel&#34;</span><span class="p">:</span> <span class="s2">&#34;info&#34;</span><span class="p">,</span> 
+    <span class="nt">&#34;error&#34;</span><span class="p">:</span> <span class="s2">&#34;/var/log/v2ray/error.log&#34;</span>
+  <span class="p">},</span> 
+  <span class="nt">&#34;routing&#34;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;settings&#34;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;rules&#34;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&#34;ip&#34;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&#34;0.0.0.0/8&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;10.0.0.0/8&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;100.64.0.0/10&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;127.0.0.0/8&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;169.254.0.0/16&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;172.16.0.0/12&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;192.0.0.0/24&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;192.0.2.0/24&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;192.168.0.0/16&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;198.18.0.0/15&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;198.51.100.0/24&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;203.0.113.0/24&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;::1/128&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;fc00::/7&#34;</span><span class="p">,</span> 
+            <span class="s2">&#34;fe80::/10&#34;</span>
+          <span class="p">],</span> 
+          <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;field&#34;</span><span class="p">,</span> 
+          <span class="nt">&#34;outboundTag&#34;</span><span class="p">:</span> <span class="s2">&#34;blocked&#34;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span> 
+    <span class="nt">&#34;strategy&#34;</span><span class="p">:</span> <span class="s2">&#34;rules&#34;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h5 id="客戶端"><a href="#客戶端" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>客戶端</h5>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;policy&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;levels&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;0&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;uplinkOnly&#34;</span> <span class="p">:</span> <span class="mi">0</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;dns&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;servers&#34;</span> <span class="p">:</span> <span class="p">[</span>
+      <span class="s2">&#34;localhost&#34;</span><span class="p">,</span>
+      <span class="s2">&#34;8.8.8.8&#34;</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;outboundDetour&#34;</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;protocol&#34;</span> <span class="p">:</span> <span class="s2">&#34;freedom&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;tag&#34;</span> <span class="p">:</span> <span class="s2">&#34;direct&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;settings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;inbound&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;listen&#34;</span> <span class="p">:</span> <span class="s2">&#34;0.0.0.0&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;port&#34;</span> <span class="p">:</span> <span class="mi">1081</span><span class="p">,</span>
+    <span class="nt">&#34;protocol&#34;</span> <span class="p">:</span> <span class="s2">&#34;socks&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;settings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;auth&#34;</span> <span class="p">:</span> <span class="s2">&#34;noauth&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;udp&#34;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&#34;ip&#34;</span> <span class="p">:</span> <span class="s2">&#34;127.0.0.1&#34;</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;inboundDetour&#34;</span> <span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;listen&#34;</span> <span class="p">:</span> <span class="s2">&#34;0.0.0.0&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;allocate&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;strategy&#34;</span> <span class="p">:</span> <span class="s2">&#34;always&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;refresh&#34;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="nt">&#34;concurrency&#34;</span> <span class="p">:</span> <span class="mi">3</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;port&#34;</span> <span class="p">:</span> <span class="mi">8001</span><span class="p">,</span>
+      <span class="nt">&#34;protocol&#34;</span> <span class="p">:</span> <span class="s2">&#34;http&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;tag&#34;</span> <span class="p">:</span> <span class="s2">&#34;httpDetour&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;domainOverride&#34;</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&#34;http&#34;</span><span class="p">,</span>
+        <span class="s2">&#34;tls&#34;</span>
+      <span class="p">],</span>
+      <span class="nt">&#34;streamSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+
+      <span class="p">},</span>
+      <span class="nt">&#34;settings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;timeout&#34;</span> <span class="p">:</span> <span class="mi">0</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="nt">&#34;log&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;error&#34;</span> <span class="p">:</span> <span class="s2">&#34;\/var\/folders\/jt\/dc88j3317917cz1n8mxqj8jc0000gn\/T\/cenmrev.v2rayx.log.C2EAD579-EFCE-4BEC-91A2-61E4760E1219\/error.log&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;loglevel&#34;</span> <span class="p">:</span> <span class="s2">&#34;debug&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;access&#34;</span> <span class="p">:</span> <span class="s2">&#34;\/var\/folders\/jt\/dc88j3317917cz1n8mxqj8jc0000gn\/T\/cenmrev.v2rayx.log.C2EAD579-EFCE-4BEC-91A2-61E4760E1219\/access.log&#34;</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;routing&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;strategy&#34;</span> <span class="p">:</span> <span class="s2">&#34;rules&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;settings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;domainStrategy&#34;</span> <span class="p">:</span> <span class="s2">&#34;IPIfNonMatch&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;rules&#34;</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&#34;domain&#34;</span> <span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&#34;localhost&#34;</span>
+          <span class="p">],</span>
+          <span class="nt">&#34;type&#34;</span> <span class="p">:</span> <span class="s2">&#34;field&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;outboundTag&#34;</span> <span class="p">:</span> <span class="s2">&#34;direct&#34;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nt">&#34;type&#34;</span> <span class="p">:</span> <span class="s2">&#34;field&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;outboundTag&#34;</span> <span class="p">:</span> <span class="s2">&#34;direct&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;ip&#34;</span> <span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&#34;geoip:private&#34;</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&#34;outbound&#34;</span> <span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&#34;sendThrough&#34;</span> <span class="p">:</span> <span class="s2">&#34;0.0.0.0&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;mux&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;enabled&#34;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&#34;concurrency&#34;</span> <span class="p">:</span> <span class="mi">8</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;protocol&#34;</span> <span class="p">:</span> <span class="s2">&#34;vmess&#34;</span><span class="p">,</span>
+    <span class="nt">&#34;settings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;vnext&#34;</span> <span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nt">&#34;address&#34;</span> <span class="p">:</span> <span class="s2">&#34;你的域名&#34;</span><span class="p">,</span>
+          <span class="nt">&#34;port&#34;</span> <span class="p">:</span> <span class="mi">443</span><span class="p">,</span>
+          <span class="nt">&#34;users&#34;</span> <span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nt">&#34;id&#34;</span> <span class="p">:</span> <span class="s2">&#34;你的UUID&#34;</span><span class="p">,</span>
+              <span class="nt">&#34;alterId&#34;</span> <span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+              <span class="nt">&#34;security&#34;</span> <span class="p">:</span> <span class="s2">&#34;auto&#34;</span><span class="p">,</span>
+              <span class="nt">&#34;level&#34;</span> <span class="p">:</span> <span class="mi">0</span>
+            <span class="p">}</span>
+          <span class="p">],</span>
+          <span class="nt">&#34;remark&#34;</span> <span class="p">:</span> <span class="s2">&#34;這個&#34;</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="nt">&#34;streamSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&#34;wsSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;path&#34;</span> <span class="p">:</span> <span class="s2">&#34;\/ws\/&#34;</span><span class="p">,</span><span class="err">你的path</span>
+        <span class="nt">&#34;headers&#34;</span> <span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&#34;Host&#34;</span> <span class="p">:</span> <span class="s2">&#34;你的域名&#34;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;tlsSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;serverName&#34;</span> <span class="p">:</span> <span class="s2">&#34;你的域名&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;allowInsecure&#34;</span> <span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;httpSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;path&#34;</span> <span class="p">:</span> <span class="s2">&#34;&#34;</span><span class="p">,</span>
+        <span class="nt">&#34;host&#34;</span> <span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&#34;&#34;</span>
+        <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;tcpSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;header&#34;</span> <span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&#34;type&#34;</span> <span class="p">:</span> <span class="s2">&#34;none&#34;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;kcpSettings&#34;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&#34;header&#34;</span> <span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&#34;type&#34;</span> <span class="p">:</span> <span class="s2">&#34;none&#34;</span>
+        <span class="p">},</span>
+        <span class="nt">&#34;mtu&#34;</span> <span class="p">:</span> <span class="mi">1350</span><span class="p">,</span>
+        <span class="nt">&#34;congestion&#34;</span> <span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nt">&#34;tti&#34;</span> <span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="nt">&#34;uplinkCapacity&#34;</span> <span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="nt">&#34;writeBufferSize&#34;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&#34;readBufferSize&#34;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nt">&#34;downlinkCapacity&#34;</span> <span class="p">:</span> <span class="mi">20</span>
+      <span class="p">},</span>
+      <span class="nt">&#34;network&#34;</span> <span class="p">:</span> <span class="s2">&#34;ws&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;security&#34;</span> <span class="p">:</span> <span class="s2">&#34;tls&#34;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<h1 id="參考鏈接"><a href="#參考鏈接" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>參考鏈接</h1>
+
+<p><a href="https://www.v2ray.com" target="_blank">V2Ray項目</a></p></div>
+
+        </article>
+
+        
+            
+            
+            
+                <ul class="post-copyright">
+                    <li class="copyright-item author">Author: <a href="https://io-oi.me/" target="_blank">reuixiy</a></li>
+                    
+                        <li class="copyright-item link">Link: <a href="/posts/v2ray-ws/" target="_blank">https://example.com/posts/v2ray-ws/</a></li>
+                    
+                    
+                        <li class="copyright-item license">License: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank">CC BY-NC-SA 4.0</a></li>
+                    
+                </ul>
+            
+        
+
+        
+            <div class="updated-badge-container"><div title="Updated @ 2019-11-16 17:35:20 CST" style="cursor:help;display:inline-block">
+
+<svg xmlns="http://www.w3.org/2000/svg" width="130" height="20" class="updated-badge"><linearGradient id="b" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="a"><rect width="130" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#a)"><path class="updated-badge-left" d="M0 0h55v20H0z"/><path class="updated-badge-right" d="M55 0h75v20H55z"/><path fill="url(#b)" d="M0 0h130v20H0z"/></g><g fill="#fff" text-anchor="middle" font-size="110"><text x="285" y="150" fill="#010101" fill-opacity=".3" textLength="450" transform="scale(.1)">updated</text><text x="285" y="140" textLength="450" transform="scale(.1)">updated</text><text x="915" y="150" fill="#010101" fill-opacity=".3" textLength="650" transform="scale(.1)">2019-11-16</text><text x="915" y="140" textLength="650" transform="scale(.1)">2019-11-16</text></g></svg></div></div>
+        
+
+        
+
+        
+            
+            
+        
+
+        
+            
+        
+
+        
+
+        
+
+        
+            
+                
+                
+            
+            
+            
+            
+                <ul class="post-nav">
+                    
+                        <li class="post-nav-prev">
+                            <a href="/posts/clash-gateway/" rel="prev">< Clash 透明代理</a>
+                        </li>
+                    
+                    
+                        <li class="post-nav-next">
+                            <a href="/posts/v2ray-force-ipv4/" rel="next">V2Ray Force Ipv4 ></a>
+                        </li>
+                    
+                </ul>
+            
+        
+
+        
+        
+    </div>
+</main>
+
+            
+    <a href="#" class="back-to-top"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            
+                
+            
+            
+
+            
+                
+            
+            
+
+            
+                
+            
+            
+
+            <div class="site-info">© 2019–2019<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon footer-icon"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>reuixiy</div>
+
+            
+                <div class="powered-by">Powered by <a href="https://github.com/gohugoio/hugo" target="_blank">Hugo</a> | Theme is <a href="https://github.com/reuixiy/hugo-theme-meme" target="_blank">MemE</a></div>
+            
+
+            
+                <div class="site-copyright"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank">CC BY-NC-SA 4.0</a></div>
+            
+
+            
+        </div>
+    </footer>
+
+        </div>
+        <script src="/js/meme.min.be273f7eb89932146bc893fce7038195a4860d8c6b61bab732423bf2dcf29375.js" integrity="sha256-vic/friZMhRryJP85wOBlaSGDYxrYbq3MkI78tzyk3U=" data-no-instant></script><script data-no-instant>InstantClick.init();</script>
+
+    
+        <script data-no-instant>
+            InstantClick.on('change', function () {
+                const theme = localStorage.getItem('theme');
+                if (theme === "dark") {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1c1c21');
+                    document.getElementById("theme-toggle").innerHTML = "🌙";
+
+                    var els = [].slice.apply(document.getElementsByClassName("chroma"));
+                    for (var i = 0; i < els.length; i++) {
+                        els[i].className = els[i].className.replace(/ *\bchroma\b/g, "chroma-dark");
+                    }
+                } else if (theme === "light") {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff');
+                    document.getElementById("theme-toggle").innerHTML = "🌞";
+
+                    var els = [].slice.apply(document.getElementsByClassName("chroma-dark"));
+                    for (var i = 0; i < els.length; i++) {
+                        els[i].className = els[i].className.replace(/ *\bchroma-dark\b/g, "chroma");
+                    }
+                }
+            });
+        </script>
+    
+
+
+
+
+
+
+    </body>
+</html>
