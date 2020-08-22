@@ -1,8 +1,17 @@
 ---
+weight: 4
 title: "V2Fly+WSS"
 date: 2020-08-22T11:57:06+08:00
-draft: true
+draft: false
+author: "MrSheep"
+authorLink: "https://mrsheep.xyz"
+description: "重寫基於Caddy V2"
+resources:
+tags: ["V2ray", "HTML"]
+
+lightgallery: false
 ---
+
 
 之前寫過的[Caddy/Nginx + V2Ray](https://blog.mrsheep.xyz/v2ray-ws/)是基於 Caddy v1 以及一些古董配置寫的
 偷個懶，直接重寫一份
