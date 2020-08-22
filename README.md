@@ -1,0 +1,1 @@
+This is a simple blog repo based on hugo and theme LoveIt
