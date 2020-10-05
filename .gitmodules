@@ -3,4 +3,4 @@
 	url = https://github.com/martignoni/hugo-notice.git
 [submodule "themes/LoveIt"]
 	path = themes/LoveIt
-	url = https://github.com/dillonzq/LoveIt
+	url = https://github.com/nekr0z/LoveIt/tree/518
