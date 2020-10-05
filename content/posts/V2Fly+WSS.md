@@ -8,6 +8,7 @@ authorLink: "https://mrsheep.xyz"
 description: "重寫基於Caddy V2"
 resources:
 tags: ["V2ray", "HTML"]
+categories: ["anti-censorship"]
 
 lightgallery: false
 ---
