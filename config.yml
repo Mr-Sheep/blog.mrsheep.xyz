@@ -1,0 +1,53 @@
+baseURL: 'https://blog.mrsheep.xyz'
+title: MrSheep's Blog
+paginate: 5
+theme: hugo-PaperMod
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpored: false
+
+# googleAnalytics: UA-123-45
+
+minify:
+  disableXML: true
+  minifyOutput: true
+
+params:
+  env: production # to enable google analytics, opengraph, twitter-cards and schema.
+  title: "MrSheep's Blog"
+  description: "MrSheep's Blog"
+  author: MrSheep
+
+  images: "https://blog.mrsheep.xyz/images/avatar.png"
+
+  ShowReadingTime: true
+  ShowShareButtons: true
+  comments: false
+  defaultTheme: auto
+  disableThemeToggle : false
+  disableSpecial1stPost : false
+
+  # profile-mode
+  profileMode:
+    enabled: false # needs to be explicitly set
+    title: MrSheep
+    # imageUrl: '<img location>'
+    # imageTitle: my image
+    buttons:
+      - name: Posts
+        url: posts
+      - name: Tags
+        url: tags
+
+  # home-info mode
+  homeInfoParams:
+    Title: "Hi there \U0001F44B"
+    Content: Welcome to my blog
+
+  socialIcons:
+    - name: github
+      url: 'https://github.com/Mr-Sheep'
+
+

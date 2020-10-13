@@ -4,7 +4,7 @@ baseURL = "https://blog.mrsheep.xyz"
 defaultContentLanguage = "en"
 # theme
 # 主题
-theme = "LoveIt"
+theme = "hugo-PaperMod"
 # themes directory
 # 主题目录
 themesDir = "./themes/"
