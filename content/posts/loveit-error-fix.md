@@ -1,5 +1,4 @@
 ---
-weight: 4
 title: "LoveIt 主題無法渲染修復"
 date: 2020-10-05T23:56:04+08:00
 draft: false

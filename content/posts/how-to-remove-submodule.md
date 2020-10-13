@@ -1,5 +1,4 @@
 ---
-weight: 4
 title: "How to remove git submodule"
 date: 2020-10-05T23:48:27+08:00
 draft: false
