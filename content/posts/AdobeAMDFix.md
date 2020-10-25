@@ -2,13 +2,15 @@
 title: "Fix Adobe Crash on AMD CPUs"
 date: 2020-10-25T16:49:04+08:00
 draft: false
-tags: ["V2ray", "HTML"]
-categories: ["anti-censorship"]
+tags: ["AMD","Adobe","OS X","System Panic"]
+categories: ["system"]
 ---
 
 ## Adobe Crash Fix
 Found on Github, just for personal record
-<!-- more-->
+
+<!--more-->
+
 Run the following code in your terminal:
 
 ```
