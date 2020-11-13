@@ -371,7 +371,12 @@ mysql -p -u v2b（用戶） v2board（數據庫名） < 備份的數據表.sql
    systemctl enable caddy
    ```
 
-   
+   4. 移除Google Analysis
+   編輯`resources/views`目錄下的`admin.blade.php`和`app.blade.php`
+   移除或註釋其中
+   ```
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-P1E9Z5LRRK"></script>
+   ```
 
 # V2Poseidon
 
