@@ -19,7 +19,7 @@ draft: false
   chmod 600 /swapfile
   ```
 
-- 開機啓動,編輯 ``/etc/fstab` `
+- 開機啓動,編輯 `/etc/fstab`
 
   ```
   /swapfile swap swap defaults 0 0
