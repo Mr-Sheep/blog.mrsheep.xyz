@@ -5,7 +5,7 @@ draft: false
 ---
 
 我的AS號和IP都已經沾灰了，再不用就要徹底忘了。
-
+非常感謝MoeQing Zoo的各位大佬們的幫助
 
 
 在你開始之前，請確定你的ISP 为你分配了一个公网 IPv4, 並且你拥有 ASN 和一个至少为 / 48 的 ipv6 block
@@ -161,10 +161,28 @@ systemctl restart bird6
 這樣 bird 將查詢所有 dummy 开头的网卡的 ip 并宣告这些 ip
  `birdc6 show route` 查看
 
+
+## 將自己的ip作爲出口
+
+[方法](https://t.me/MoeQing/47434)：
+```
+ip route change （照写） src 源地址
+```
+以he的tunnel爲例
+```
+ip addr add dev sit1 你的段/48
+ip -6 route change default dev sit1 src 段中的地址
+```
+
+以vultr：
+```
+ip addr add dev ens3 你的段/48
+ip -6 route change default via fe80::fc00:3ff:fe11:c1db dev ens3 proto ra metric 1024 pref medium src 段中地址
+```
+
+
 # 參考
 
-[IP 广播：在不借助你的 ISP 进行任何操作的情况下，广播 (组播) 你的 IPv6][1]
-[IP 广播：使用 bird 广播 (组播) ipv6][2]
+[IP 广播：在不借助你的 ISP 进行任何操作的情况下，广播 (组播) 你的 IPv6](https://blog.ni-co.moe/public/563.html)
 
-[1]: https://blog.ni-co.moe/public/563.html
-[2]: https://blog.ni-co.moe/public/560.html
+[IP 广播：使用 bird 广播 (组播) ipv6](https://blog.ni-co.moe/public/560.html)
