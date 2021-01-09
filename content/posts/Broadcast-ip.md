@@ -5,8 +5,8 @@ draft: false
 ---
 
 我的AS號和IP都已經沾灰了，再不用就要徹底忘了。
-非常感謝MoeQing Zoo的各位大佬們的幫助
 
+非常感謝MoeQing Zoo的各位大佬們的幫助
 
 在你開始之前，請確定你的ISP 为你分配了一个公网 IPv4, 並且你拥有 ASN 和一个至少为 / 48 的 ipv6 block
 
@@ -32,15 +32,17 @@ draft: false
 
 訪問tunnelbroker
 
-`Tunnel - Example Config - Linux net-tools`
-配置大概張這個樣子
-
-```ifconfig sit0 up
-ifconfig sit0 inet6 tunnel ::0.0.0.0
-ifconfig sit1 up
-ifconfig sit1 inet6 add ::::/64
-route -A inet6 add ::/0 dev sit1
+編輯 `/etc/network/interfaces`,添加：
 ```
+auto 你想要的名字
+ iface 你想要的名字 inet6 v4tunnel
+  address 給你分配的Client ipv6
+  endpoint 給你分配的Server ipv4
+  local 給你分配的Client ipv4
+  ttl 255
+  gateway 給你分配的Server ipv6
+```
+之後 `systemctl restart networking`就好
 
 # 廣播
 
@@ -80,6 +82,10 @@ protocol static
 protocol device
 {
         scan time 5;
+}
+protocol kernel {
+   scan time 5;
+   export all;
 }
 ```
 

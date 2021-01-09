@@ -4,13 +4,15 @@ date: 2020-03-22T18:53:14+08:00
 draft: false
 ---
 
-h幫朋友升級了1000兆頻寬，順便就幫他上了雙栈，電信的配置真是惱火
+
+幫朋友升級了1000兆頻寬，順便就幫他上了雙栈，電信的配置真是惱火
 
 <!--more-->
+Update 01,10,2021: 修訂Pool Size部分內容
 
 # 橋接
 
-首先需要在光貓裏該成橋接，使用基地臺撥號，具體怎麼修改由很多介紹，我就不再寫了
+首先需要在光貓裏該成橋接，用ROS撥號，具體怎麼修改由很多介紹，我就不再寫了
 
 [中国电信天翼光猫改桥接模式方法](https://www.yeboyzq.com/luyoujiaohuan/984.html)
 
@@ -26,7 +28,9 @@ h幫朋友升級了1000兆頻寬，順便就幫他上了雙栈，電信的配置
 Interface: pppoe out
 Request: prefix
 Pool name: 隨意
-Pool Prefix Length: 60/64/48
+Pool Prefix Length: 60/64/48 
+需要根據運營商分配給你的Length來改一下，不然會報錯
+pool6 refused acquire: Pool ctv6 exhausted - no more addresses left!
 
 ✅ Rapid Commit
 ✅ Add Default Route

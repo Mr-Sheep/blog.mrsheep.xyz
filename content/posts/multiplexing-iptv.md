@@ -1,5 +1,5 @@
 ---
-title: "Vlan Iptv"
+title: "VLan IPtv"
 date: 2020-04-07T22:57:20+08:00
 draft: false
 ---
@@ -9,6 +9,7 @@ draft: false
 剛好他家裡有ROS和一臺本來用於監控的GS105E，那就搞個vlan來玩玩唄
 
 <!--more-->
+Update 01,10,2021: Update details
 
 # 前言
 
@@ -18,25 +19,7 @@ draft: false
 
 > **虛擬區域網路**（**Virtual Local Area Network**或簡寫**VLAN**, **V-LAN**）是一種建構於區域網路交換技術（LAN Switch）的[網路管理](https://zh.wikipedia.org/wiki/網絡管理)的技術，網管人員可以藉此透過控制[交換器](https://zh.wikipedia.org/wiki/交換器)有效分派出入區域網的封包到正確的出入埠，達到對不同實體區域網中的裝置進行邏輯分群（Grouping）管理，並降低區域網內大量資料流通時，因無用封包過多導致壅塞的問題，以及提昇區域網的資訊安全保障
 
-Vlan是一個虛擬的Lan，將一個實體的Lan分割成多個Vlan使用，分割出來的Vlan各自獨立且不能相互通訊。本文基於802.1q
-
-## 多工？
-
-一樣是維基百科：
-
->**多路複用**（Multiplexing，又稱「**多工**」）是一個[通訊](https://zh.wikipedia.org/wiki/通信)和[計算機網路](https://zh.wikipedia.org/wiki/计算机网络)領域的專業[術語](https://zh.wikipedia.org/wiki/术语)，在沒有歧義的情況下，「多路複用」也可被稱為「複用」。多路複用通常表示在一個[通道](https://zh.wikipedia.org/wiki/信道)上[傳輸](https://zh.wikipedia.org/wiki/传输)多路[訊號](https://zh.wikipedia.org/wiki/信号)或[數據流](https://zh.wikipedia.org/w/index.php?title=数据流&action=edit&redlink=1)的過程和技術。因為多路複用能夠將多個低速通道整合到一個高速通道進行傳輸，從而有效地利用了高速通道。通過使用多路複用，[通訊運營商](https://zh.wikipedia.org/w/index.php?title=通信运营商&action=edit&redlink=1)可以避免維護多條線路，從而有效地節約運營成本。[[1\]](https://zh.wikipedia.org/zh-tw/多路复用#cite_note-1)
-
-其抽象模型見下圖
-
-![Mux_color.png](https://i.loli.net/2020/04/07/zaO2BEdXJQGsC3K.png)
-
-## Trunking?
-
-還是維基百科：
-
-> 中繼**（Trunking）**是一個藉由分享一段相同的線路或是頻率而不是單獨提供它們，來提供網路連接給眾多用戶的方法，類似於樹幹與許多樹枝的結構。此方法被廣泛的運用於電話系統、常用於警察機關的雙向無線電，以及網際網路中。
->
-> 主幹（trunk）是兩端點中的單一傳輸頻道，端點都是交換中心（switching center）或是節點（node）。
+VLan是一個虛擬的Lan，將一個實體的Lan分割成多個Vlan使用，分割出來的Vlan各自獨立且不能相互通訊。本文基於802.1q
 
 ## 其他解決辦法
 
@@ -85,6 +68,8 @@ Vlan --> 802.1q VLAN --> 高級設定 -->**啓用**
 
 這裏將2作爲internet的vlan，3用語iptv
 
+路由器ether5作爲與交換機連結的埠，ether9連結iptv
+
 Vlan 成員：
 
 Vlan 2:
@@ -114,10 +99,14 @@ Port VLAN ID需要和上面配置的Vlan id對應，即
 - 在interface --> 新建 --> VLAN中新建兩條VLan，名字隨便,這裏我分別叫做IPTV-VLAN和LAN-VLAN。 vlan id分別爲Switch中配置兩個id，interface都選擇連結gs105e的端口，即ether 5 
 
 - 將ether 5與ether 9從原有bridge中移除
-- Bridge --> 新建 新建橋接，名稱隨意，將iptv vlan和 iptv接入的端口橋接在一起
-- bridge --> ports，新建：
+- Bridge --> 新建 新建橋接，名稱隨意，這裏是**IPTV**
+- bridge --> ports，將iptv vlan和 iptv接入的端口橋接在一起, 新建：
   - interface --> ether 9, bridge--> 你新建的橋接名字
   - interface --> iptv-vlan，bridge --> 橋接名字
+
+<img src="https://i.loli.net/2021/01/10/V5SvmDar4WQb8hl.png" alt="Bridge" style="zoom:50%;" />
+
+<img src="https://i.loli.net/2021/01/10/O57QhP1slmGkB8u.png" alt="Vlan" style="zoom:50%;" />
 
 搞定
 
