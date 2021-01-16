@@ -2,6 +2,8 @@
 title: "V2Board+V2poseidon"
 date: 2020-04-05T22:48:01+08:00
 draft: false
+tags: ["V2Ray","V2Fly","Anti-Censorship"]
+categories: ["networking","Proxy"]
 ---
 
 本文目的在於教你如何使用免費[^1]的前(後)端成爲一名~~奸商~~ 機場主

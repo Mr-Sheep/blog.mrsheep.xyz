@@ -2,7 +2,8 @@
 title: "Caddy Ssl"
 date: 2020-04-04T18:41:04+08:00
 draft: false
-
+tags: ["Caddy","SSL","TLS"]
+categories: ["hosting"]
 ---
 
 Cloudflare的Origin CA是CF自簽的憑證，不通過CF的話會報錯。所以就水一篇文章唄。

@@ -2,6 +2,8 @@
 title: "Vmware Credential Guards Fix"
 date: 2019-12-01T19:31:35+08:00
 draft: false
+tags: ["Vmware"]
+categories: ["system"]
 ---
 
 Just can't open my vm

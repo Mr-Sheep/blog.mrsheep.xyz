@@ -1,5 +1,4 @@
 ---
-weight: 1
 title: "V2Fly+WSS"
 date: 2020-08-22T11:57:06+08:00
 draft: false
@@ -7,9 +6,8 @@ author: "MrSheep"
 authorLink: "https://mrsheep.xyz"
 description: "重寫基於Caddy V2"
 resources:
-tags: ["V2ray", "HTML"]
-categories: ["anti-censorship"]
-
+tags: ["V2Ray","V2Fly","Anti-Censorship"]
+categories: ["networking","Proxy"]
 lightgallery: false
 ---
 

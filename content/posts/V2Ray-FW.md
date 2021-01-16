@@ -2,6 +2,8 @@
 title: "V2Ray中轉"
 date: 2019-05-10T16:51:13+08:00
 draft: false
+tags: ["V2Ray","V2Fly","Anti-Censorship"]
+categories: ["networking","Proxy"]
 ---
 
 國內到我HE的小機線路峰值ping偏高，但是ip很清真，剛好我的HK小機的ISP和HE有transit

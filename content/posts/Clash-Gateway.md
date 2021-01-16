@@ -2,6 +2,8 @@
 title: "Clash 透明代理"
 date: 2019-09-19T19:11:26+08:00
 draft: false
+tags: ["Proxy","Clash","Proxy"]
+categories: ["Networking"]
 ---
 
 水文一篇，因爲家裏的網絡中有類似小米盒子，Apple TV這樣的設備，自身配置不是很好，鏈接效率會被降低，還不如在RPi 3B配置一個透明代理

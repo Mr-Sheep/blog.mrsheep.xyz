@@ -2,6 +2,8 @@
 title: "V2Ray Force Ipv4"
 date: 2019-09-15T02:11:05+08:00
 draft: false
+tags: ["V2Ray","V2Fly","Anti-Censorship"]
+categories: ["networking","Proxy"]
 ---
 
 我在机器上开了6to4的隧道，本來是準備用來廣播我自己的ipv6，但是這樣子导致V2Ray流量会被转发到HE的隧道ip，最后NF会直接ban掉HE的ip

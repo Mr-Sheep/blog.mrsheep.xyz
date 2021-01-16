@@ -1,5 +1,4 @@
 ---
-weight: 2
 title: "Surge AD Filter"
 date: 2020-11-09T14:53:07+08:00
 draft: false

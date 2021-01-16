@@ -2,7 +2,6 @@
 title: "V2Board + Caddy + PHP + MySQL"
 date: 2020-11-12T20:56:10+08:00
 draft: false
-weight: 1
 tags: ["V2Ray","V2Fly","Anti-Censorship"]
 categories: ["networking","Proxy"]
 ---

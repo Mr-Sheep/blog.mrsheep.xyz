@@ -2,6 +2,8 @@
 title: "Caddy/Nginx + V2Ray"
 date: 2019-09-15T13:37:25+08:00
 draft: false
+tags: ["V2Ray","V2Fly","Anti-Censorship"]
+categories: ["networking","Proxy"]
 ---
 
 相比較於之前的Nginx，Caddy v1是一個更加輕量級，安裝更加方便，配置超級簡單的web server，並且支持自動申請lets encrypt證書（雖然我用不到）

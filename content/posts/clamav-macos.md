@@ -2,8 +2,8 @@
 title: "ClamAV MacOS X"
 date: 2020-10-13T14:05:05+08:00
 draft: false
-tags: ["V2ray", "HTML"]
-categories: ["anti-censorship"]
+tags: ["Antivirus", "ClamAV","MacOS X"]
+categories: ["system"]
 ---
 
 One of the best open source anti-virus for Mac OS X is [ClamAV](www.clamav.net) by Cisco.

@@ -2,6 +2,8 @@
 title: "廣播你的ip"
 date: 2019-09-13T17:47:00+08:00
 draft: false
+tags: ["BGP","bird"]
+categories: ["networking"]
 ---
 
 我的AS號和IP都已經沾灰了，再不用就要徹底忘了。

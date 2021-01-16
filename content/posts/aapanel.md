@@ -2,6 +2,8 @@
 title: "Aapanel"
 date: 2020-04-05T11:54:14+08:00
 draft: false
+tags: ["AApanel","BTpanel","寶塔"]
+categories: ["hosting"]
 ---
 
 aaPanel是寶塔面板的國際版本，我本來是很討厭面板的，安全性不能夠保證。但是必須上就沒辦法了，本文致力於將該面板的安全性進一步增強

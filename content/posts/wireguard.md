@@ -3,7 +3,6 @@ title: "Personal Private Network with WireGuard"
 date: 2021-01-08T17:53:43+08:00
 draft: false
 tags: ["VPN","WireGuard"]
-weight: 1
 categories: ["Networking"]
 ---
 本文通過 WireGuard 設立虛擬局域網，將位於世界不同位置的伺服器連結起來，以實現 ~~裝13~~ 的目的
