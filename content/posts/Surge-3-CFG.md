@@ -1,12 +1,17 @@
 ---
-title: "Surge 3 CFG"
+title: "Surge 4 CFG"
 date: 2019-11-27T09:35:37+08:00
 draft: false
+tags: ["VPN","Surge"]
+categories: ["Networking"]
 ---
+
 
 11-30-2019 更新：Surge as Gateway
 
 05-03-2020 更新：移除overture部分
+
+01-16-2021 更新：添加VPN與Surge共存部分
 
 Surge是一個功能十分強大的網絡工具箱，可以作為高性能的HTTP和SOCKS代理服務器。可以完成抓包，分析等工作，
 支持規則代理，支持多種代理（支持V2Ray）。並包括基於TLS的HTTP(s), Socks5等
@@ -31,6 +36,21 @@ Surge是一個功能十分強大的網絡工具箱，可以作為高性能的HTT
 
 基本的配置教程官方寫的十分的詳細，可以直接參考[nssurge manual][1]
 我只寫一些，畢竟人家大佬寫了那麼多
+
+## 與VPN共存
+這部份參考：[Enhanced Mode下连接原生vpn的问题](https://community.nssurge.com/d/)178-enhanced-mode-vpn/4
+以wireguard爲例，同時適用於其他協議
+
+新建節點：
+
+`VPN4011 = direct, interface=ppp0, allow-other-interface=true`
+
+然后把你需要走 VPN 的域名都加上这个策略即可：
+```
+IP-CIDR,192.168.88.0/24,VPN4011,no-resolve
+IP-CIDR,10.89.64.0/24,VPN4011,no-resolve
+IP-CIDR,192.168.89.0/24,VPN4011,no-resolve
+```
 
 ## DNS
 
