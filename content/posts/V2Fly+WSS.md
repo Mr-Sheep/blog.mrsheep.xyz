@@ -328,10 +328,13 @@ installed: /etc/systemd/system/v2ray@.service
 <br/>詳見：[v2fly/v2fly-github-io/issues/20](https://github.com/v2fly/v2fly-github-io/issues/20)
 
 ## BBR
-非生產環境可以嘗試bbrplus,生產環境建議使用原生bbr
 <br/>BBR是什麼可以參考 [谷歌的博文](https://cloud.google.com/blog/products/gcp/tcp-bbr-congestion-control-comes-to-gcp-your-internet-just-got-faster)
+
 <br/>也可以看[APNIC的博文](https://blog.apnic.net/2017/05/09/bbr-new-kid-tcp-block/)
-### 原裝正品bbr
+
+已經移除BBR PLUS部分，過時產品建議遠離
+
+### bbr
 請確定內核版本 > 4.9
 ```
 cat >>/etc/sysctl.conf << EOF
@@ -351,13 +354,7 @@ net.ipv4.tcp_available_congestion_control = reno cubic bbr
 tcp_bbr                20480  41 
 ```
 
-### bbr plus
-```
-wget -N --no-check-certificate "https://raw.githubusercontent.com/chiakge/Linux-NetSpeed/master/tcp.sh"
-chmod +x tcp.sh
-./tcp.sh
-```
-首先選擇你需要的bbr方案，替換內核重啓之後選擇開啓即可。
+
 
 ## 最後
 完成以後重啓Caddy和V2Ray即可
