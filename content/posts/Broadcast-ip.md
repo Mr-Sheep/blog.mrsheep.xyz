@@ -32,8 +32,7 @@ categories: ["networking"]
 
 # 創建隧道
 
-訪問tunnelbroker
-
+创建6in4 sit
 編輯 `/etc/network/interfaces`,添加：
 ```
 auto 你想要的名字
@@ -45,6 +44,16 @@ auto 你想要的名字
   gateway 給你分配的Server ipv6
 ```
 之後 `systemctl restart networking`就好
+
+如果你的网卡是内网ip，把local换成0.0.0.0既可
+也可以用这个
+```
+ifconfig sit0 up
+ifconfig sit0 inet6 tunnel ::<server ipv4>
+ifconfig sit1 up
+ifconfig sit1 inet6 add <Client ipv6>/64
+route -A inet6 add ::/0 dev sit1
+```
 
 # 廣播
 
