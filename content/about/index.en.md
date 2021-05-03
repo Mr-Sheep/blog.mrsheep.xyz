@@ -7,6 +7,3 @@ draft: false
 Hi, welcome to MrSheep's personal blog.
 To know more about me, visit [mrsheep.xyz](https://mrsheep.xyz)
 
-
-This site is written with Hugo, the source code is hosted on GitHub, and powered by Cloudflare Pages
-
