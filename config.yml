@@ -3,31 +3,78 @@ title: MrSheep's Blog
 paginate: 5
 theme: hugo-PaperMod
 
+enableInlineShortcodes: true
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
-buildExpored: false
-
-# googleAnalytics: UA-123-45
+buildExpired: false
+enableEmoji: true
 
 minify:
   disableXML: true
   minifyOutput: true
+
+languages:
+  en:
+    languageName: "English"
+    weight: 1
+    menu: 
+      main:
+          - identifier: archives
+            name: Archives
+            url: /archives/
+            weight: 10
+          - identifier: categories
+            name: Categories
+            url: /categories/
+            weight: 20
+          - identifier: tags
+            name: 🏷️
+            url: /tags/
+            weight: 30
+          - identifier: Search
+            name: 🔍️
+            url: /search
+            weight: 40
+  zh:
+    languageName: ":hk:"
+    languageAltTitle: Chinese Traditional
+    weight: 2
+    menu: 
+      main:
+          - identifier: archives
+            name: Archives
+            url: /archives/
+            weight: 10
+          - identifier: categories
+            name: Categories
+            url: /categories/
+            weight: 20
+          - identifier: tags
+            name: 🏷️
+            url: /tags/
+            weight: 30
+          - identifier: Search
+            name: 🔍️
+            url: /search
+            weight: 40
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: "MrSheep's Blog"
   description: "MrSheep's Blog"
   author: MrSheep
-
   images: "https://blog.mrsheep.xyz/images/avatar.png"
-
   ShowReadingTime: true
-  ShowShareButtons: true
+  ShowShareButtons: false
+  ShowBreadCrumbs: true
+  ShowPostNavLinks: true
+  ShowToc: true
   comments: false
   defaultTheme: auto
   disableThemeToggle : false
   disableSpecial1stPost : false
+  languageAltTitle: "Chinese"
 
   assets:
     # disableHLJS: true # to disable highlightjs
@@ -70,18 +117,5 @@ outputs:
         - RSS
         - JSON # is necessary
 
-menu:
-    main:
-        - identifier: categories
-          name: Categories
-          url: /categories/
-          weight: 10
-        - identifier: tags
-          name: 🏷️
-          url: /tags/
-          weight: 20
-        - identifier: Search
-          name: 🔍️
-          url: /search
-          weight: 30
+
 
