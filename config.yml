@@ -43,18 +43,18 @@ languages:
     menu: 
       main:
           - identifier: archives
-            name: Archives
+            name: 歸檔
             url: /archives/
             weight: 10
           - identifier: categories
-            name: Categories
+            name: 分類
             url: /categories/
             weight: 20
           - identifier: tags
             name: 🏷️
             url: /tags/
             weight: 30
-          - identifier: Search
+          - identifier: 搜尋
             name: 🔍️
             url: /search
             weight: 40
