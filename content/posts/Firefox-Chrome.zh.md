@@ -139,6 +139,8 @@ SearX看起來很不錯，但是搜索質量實在看不下去
 
 參考來源：https://www.privacytools.io/browsers/#about_config
 
+如果你希望瞭解更多相關內容，可以查看[Browser Fingerprinting: What Is It and What Should You Do About It?](https://pixelprivacy.com/resources/browser-fingerprinting/)，他們提供了更爲完整和詳細的分析
+
 **建議去原網站仔細查看說明後再配置**
 ```
 - privacy.firstparty.isolate = true
