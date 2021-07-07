@@ -47,14 +47,16 @@ SSH + 腦子 + 電腦 + **耐心**
 ## PHP
 1. 添加Ondřej Surý的ppa:
 ```
-add-apt-repository ppa:ondrej/php
+wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
+echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" |  tee /etc/apt/sources.list.d/php.list
 apt update
 ```
-2. 安裝php7.4(其實只要大於7.3就好)
+
+2. 安裝php7.4(其實只要大於7.3就好) 和 redis
 ```
-apt -y install php7.4 php7.4-fpm php7.4-common php7.4-cli
+apt -y install php7.4 php7.4-fpm php7.4-common php7.4-cli redis
 以及一大堆亂七八糟的包 -->
-apt -y install php7.4-curl php-redis php7.4-mysql php7.4-mbstring php7.4-json php7.4-opcache php7.4-readline php7.4-xml
+apt -y install php7.4-curl php7.4-redis php7.4-mysql php7.4-mbstring php7.4-json php7.4-opcache php7.4-readline php7.4-xml
 
 ```
 3. 解除被禁用的函數
@@ -121,6 +123,8 @@ disable_functions = "show_source, system, shell_exec, exec"
 
 
 ## MySQL
+目前默認的MySQL的版本是8，在部分命令上和原有的5.X有區別
+
 在[官方下載](https://dev.mysql.com/downloads/repo/apt/#current-tab)找到最新版本的`.deb`包
 以2020年11月最新版本`mysql-apt-config_0.8.16-1_all.deb`爲例
 ```
@@ -226,13 +230,14 @@ All done!
 
 數據庫名字爲`v2board`
 
+**MySQL 5.X**
 ```sql
 mysql -u root -p 
 輸入密碼
-GRANT ALL PRIVILEGES ON *.* TO 'v2b'@'localhost' IDENTIFIED BY 'fuckGFW';
+GRANT ALL PRIVILEGES ON *.* TO 'v2b'@'localhost' IDENTIFIED BY 'fuckGFW（密碼）';
 flush privileges;
 
-退出數據課
+退出數據庫
 \q
 
 mysql -u v2b -p
@@ -242,9 +247,22 @@ CREATE DATABASE v2board;
 退出數據庫
 \q
 ```
+**MySQL 8.X**
+```sql
+mysql> CREATE USER 'v2b'@'localhost' IDENTIFIED BY 'fuckGFW(你的密碼)';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'v2b'@'localhost' WITH GRANT OPTION;
+mysql> FLUSH PRIVILEGES;
+```
+
+
 如果你需要導入現有的數據庫，使用以下命令：
 ```
-mysql -p -u v2b（用戶） v2board（數據庫名） < 備份的數據表.sql 
+mysql -p -u [用戶] [數據庫] < 備份的數據表.sql 
+```
+
+如果你需要備份你現有的數據庫：
+```
+mysqldump -u [用戶]  -p [數據庫] > [filename].sql
 ```
 
 ## 安裝V2Board
@@ -418,6 +436,13 @@ mysql -p -u v2b（用戶） v2board（數據庫名） < 備份的數據表.sql
 
    建議參考[之前的文章](https://blog.mrsheep.xyz/posts/v2board+v2poseidon/)和[官綱文檔](https://poseidon-gfw.cc/shi-yong-v2ray-poseidon/v2ray-poseidon-with-v2board)
 
+## 注意
+
+請在安裝完成php7.4以後註釋掉php的apt repo，或者在apt upgrade的時候略過php部分，否則會造成php與php-redis等版本不同
+
+如果出現500錯誤，检查站点根目录权限，递归755，保证目录有可写文件的权限，也有可能是Redis扩展没有安装或者Redis没有按照造成的。你可以通过查看storage/logs下的日志来排查错误或者开启debug模式。
+
+
 # References
 
 - [How to Install MySQL on Debian 10 Linux](https://linuxize.com/post/how-to-install-mysql-on-debian-10/)
@@ -433,4 +458,4 @@ mysql -p -u v2b（用戶） v2board（數據庫名） < 備份的數據表.sql
 - [V2 Poseidon官方文檔](https://poseidon-gfw.cc)
 - [V2Board 官方文檔](https://docs.v2board.com)
 - [Caddy 官方文檔](https://caddyserver.com/docs/caddyfile/directives/php_fastcgi)
-
+- [How to grant all privileges to root user in MySQL 8.0](https://stackoverflow.com/a/50197630)
